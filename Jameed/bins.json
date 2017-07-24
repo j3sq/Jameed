@@ -1,0 +1,812 @@
+[
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.straight_flush"
+    },
+    "strategies": [
+      []
+    ],
+    "name": "Straight Flush"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.four_of_a_kind"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ]
+    ],
+    "name": "Four of a Kind"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.full_house"
+    },
+    "strategies": [
+      []
+    ],
+    "name": "Full House"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.flush"
+    },
+    "strategies": [
+      []
+    ],
+    "name": "Flush"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.straight"
+    },
+    "strategies": [
+      []
+    ],
+    "name": "Straight"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 7,
+    "hand_type": {
+      "__enum__": "HandType.three_of_a_kind"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ]
+    ],
+    "name": "Three of a Kind - Low"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 7,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.three_of_a_kind"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ]
+    ],
+    "name": "Three of a Kind - High"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 5,
+    "hand_type": {
+      "__enum__": "HandType.two_pair"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ]
+    ],
+    "name": "Two Pair - Low"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 5,
+    "rank_to": 9,
+    "hand_type": {
+      "__enum__": "HandType.two_pair"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ]
+    ],
+    "name": "Two Pair - Med"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 9,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.two_pair"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ]
+    ],
+    "name": "Two Pair - High"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 5,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair - Low"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 5,
+    "rank_to": 9,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair - Med"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 9,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair - High"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 5,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card - Low"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 5,
+    "rank_to": 9,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card - Med"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": -1,
+    "rank_from": 9,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card - High"
+  },
+  {
+    "is_potential_flush": true,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 5,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair + Potential Flush - Low"
+  },
+  {
+    "is_potential_flush": true,
+    "is_potential_straight": -1,
+    "rank_from": 5,
+    "rank_to": 9,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair + Potential Flush - Med"
+  },
+  {
+    "is_potential_flush": true,
+    "is_potential_straight": -1,
+    "rank_from": 9,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair + Potential Flush - High"
+  },
+  {
+    "is_potential_flush": true,
+    "is_potential_straight": -1,
+    "rank_from": 0,
+    "rank_to": 5,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card + Potential Flush - Low"
+  },
+  {
+    "is_potential_flush": true,
+    "is_potential_straight": -1,
+    "rank_from": 5,
+    "rank_to": 9,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card + Potential Flush - Med"
+  },
+  {
+    "is_potential_flush": true,
+    "is_potential_straight": -1,
+    "rank_from": 9,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card + Potential Flush - High"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 1,
+    "rank_from": 0,
+    "rank_to": 5,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair + Potential Straight (type 1) - Low"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 1,
+    "rank_from": 5,
+    "rank_to": 9,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair + Potential Straight (type 1) - Med"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 1,
+    "rank_from": 9,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair + Potential Straight (type 1) - High"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 1,
+    "rank_from": 0,
+    "rank_to": 5,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card + Potential Straight (type 1) - Low"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 1,
+    "rank_from": 5,
+    "rank_to": 9,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card + Potential Straight (type 1) - Med"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 1,
+    "rank_from": 9,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card + Potential Straight (type 1)- High"
+  },
+    {
+    "is_potential_flush": false,
+    "is_potential_straight": 2,
+    "rank_from": 0,
+    "rank_to": 5,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair + Potential Straight (type 2)- Low"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 2,
+    "rank_from": 5,
+    "rank_to": 9,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair + Potential Straight (type 2) - Med"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 2,
+    "rank_from": 9,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.one_pair"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "One Pair + Potential Straight (type 2) - High"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 2,
+    "rank_from": 0,
+    "rank_to": 5,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card + Potential Straight (type 2) - Low"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 2,
+    "rank_from": 5,
+    "rank_to": 9,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card + Potential Straight (type 2) - Med"
+  },
+  {
+    "is_potential_flush": false,
+    "is_potential_straight": 2,
+    "rank_from": 9,
+    "rank_to": 13,
+    "hand_type": {
+      "__enum__": "HandType.high_card"
+    },
+    "strategies": [
+      [],
+      [
+        -1
+      ],
+      [
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        3,
+        2
+      ]
+    ],
+    "name": "High Card + Potential Straight (type 2) - High"
+  }
+]
