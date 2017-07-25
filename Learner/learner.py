@@ -4,13 +4,6 @@ from learner.stats import StatBuilder,SBin
 
 import time
 
-
-
-
-
-
-
-()
 Hand.load_hands_dict('./hands.json')
 hand = Hand(cards_string='KH,QC,JD,9D,8D')
 

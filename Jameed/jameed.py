@@ -1,4 +1,5 @@
 import sys
+sys.path.append('../Learner')
 import ClientBase
 import random
 from learner.card import Card, Hand, HandType, HandValue
@@ -6,7 +7,7 @@ from learner.stats import StatBuilder, SBin
 import time
 from math import exp
 
-sys.path.append('../Learner')
+
 HANDS_COMBINATIONS = 2598960
 THRESHOLD_TO_OPEN = 0.2
 THRESHOLD_TO_FORCE_ALL_IN = 0.95
@@ -178,6 +179,8 @@ class Jameed(object):
         p_win = p_hand ** (self.__no_of_players - 1)  # This assumes independent events which is not the case,
         #                                           but should be a good approximation due to the large sample space
 
+        self.debug('p_h = {:.2f}, p_w = {:.2f}'.format(p_hand, p_win))
+
         # Fixed strategy: Hand is too bad -> check
         if p_win < THRESHOLD_TO_OPEN:
             self.debug('Open choice: Forced to check due to crappy hand')
@@ -193,7 +196,7 @@ class Jameed(object):
             return action
         elif action == ClientBase.BettingAnswer.ACTION_OPEN:
             amount = self.sample_open_amount_with_bias(p_win, minimum_pot_after_open, current_bet, remaining_chips)
-            self.debug(self.debug('Open choice: Opening with {} chips'.format(amount)))
+            self.debug('Open choice: Opening with {} chips'.format(amount))
             return action, amount
         else:
             raise ValueError
@@ -248,6 +251,8 @@ class Jameed(object):
         p_hand = float(self.__hand.hand_value.strength) / HANDS_COMBINATIONS
         p_win = p_hand ** (self.__no_of_players - 1)  # This assumes independent events which is not the case,
         #                                           but should be a good approximation due to the large sample space
+
+        self.debug('p_h = {:.2f}, p_w = {:.2f}'.format(p_hand, p_win))
         # Fixed Strategy: Hand is extremely bad
         if p_win < THRESHOLD_TO_FORCE_FOLD:
             self.debug('Call/Raise choice: Forced to fold due to crappy hand')

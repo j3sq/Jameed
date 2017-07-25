@@ -37,32 +37,22 @@ while True:
         # Get data
         data = s.recv(BUFFER_SIZE)
         # split string into fraction
-        if len(unprocessed_buffer)==0:
-            MsgFractions = data.split()
-        else:
-            # read previously buffered data
-            MsgFractions = unprocessed_buffer
-            unprocessed_buffer = []
-
-
-        # Check if message is empty
-        if len(MsgFractions) == 0:
+        unprocessed_buffer.extend(data.split())
+        if len(unprocessed_buffer) == 0:
             continue
-
+        RequestType = unprocessed_buffer[0]
+        request_argc = request2argc[RequestType]
+        MsgFractions = unprocessed_buffer[:request_argc + 1]
+        unprocessed_buffer = unprocessed_buffer[request_argc+1:]
         # No. of Msg
-        iMsg = iMsg + 1
+        iMsg += 1
         # print('MsgFractions', data)
 
         # Get Request type
-        RequestType = MsgFractions[0]
+        # RequestType = MsgFractions[0]
 
         # Get expected number of arguments
-        request_argc = request2argc[RequestType]
-        if len(MsgFractions)>request_argc + 1:
-            # We received more than once message.
-            unprocessed_buffer = MsgFractions[request_argc+1:]
-            MsgFractions = MsgFractions[:request_argc+1]
-        # print('CMD', RequestType)
+
 
         # "Name?"
         # /** Sent from server to clients before the game starts. */
@@ -112,10 +102,13 @@ while True:
             playerRemainingChips = int(MsgFractions[3])
             tmp = queryOpenAction(minimumPotAfterOpen, playersCurrentBet, playerRemainingChips)
             tmp = jameed.get_open_action(minimumPotAfterOpen, playersCurrentBet, playerRemainingChips)
+            print('%' * 20)
+            print(tmp)
             if isinstance(tmp, str):  # For check and All-in
                 s.send(tmp + "\n")
             elif len(tmp) == 2:  # For open
                 s.send(tmp[0] + ' ' + str(tmp[1]) + " \n")
+
             print(SIGNAL_ALIVE)
             print(POKER_CLIENT_NAME + 'Action>', tmp)
 
