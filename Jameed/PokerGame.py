@@ -35,9 +35,14 @@ while True:
 
     try:
         # Get data
-        data = s.recv(BUFFER_SIZE)
+        if len(unprocessed_buffer) == 0:
+            data = s.recv(BUFFER_SIZE)
+            # print('Received :: {} :: {}'.format(time.time(), data))
+
+        # print('Unprocessed buffer :: {} :: {}'.format(time.time(), unprocessed_buffer))
         # split string into fraction
         unprocessed_buffer.extend(data.split())
+        data = ''
         if len(unprocessed_buffer) == 0:
             continue
         RequestType = unprocessed_buffer[0]
@@ -59,6 +64,7 @@ while True:
         if RequestType == 'Name?':  # if Server request for name
             #s.send('Name ' + queryPlayerName(POKER_CLIENT_NAME) + "\n")
             queryPlayerName(POKER_CLIENT_NAME)
+            # time.sleep(.1)
             s.send('Name ' + jameed.name + "\n")
 
         # "Chips"
@@ -102,8 +108,7 @@ while True:
             playerRemainingChips = int(MsgFractions[3])
             tmp = queryOpenAction(minimumPotAfterOpen, playersCurrentBet, playerRemainingChips)
             tmp = jameed.get_open_action(minimumPotAfterOpen, playersCurrentBet, playerRemainingChips)
-            print('%' * 20)
-            print(tmp)
+            # time.sleep(.1)
             if isinstance(tmp, str):  # For check and All-in
                 s.send(tmp + "\n")
             elif len(tmp) == 2:  # For open
@@ -119,6 +124,7 @@ while True:
             playersRemainingChips = int(MsgFractions[4])
             tmp = queryCallRaiseAction(maximumBet, minimumAmountToRaiseTo, playersCurrentBet, playersRemainingChips)
             tmp = jameed.get_call_raise_action(maximumBet,minimumAmountToRaiseTo, playersCurrentBet, playersRemainingChips)
+            # time.sleep(.1)
             if isinstance(tmp, str):  # For fold, all-in, call
                 s.send(tmp + "\n")
             elif len(tmp) == 2:  # For raise
@@ -134,8 +140,9 @@ while True:
             jameed.set_hand((','.join(MsgFractions[1:])).replace('T', '10'))
             # print('CurrentHand>', infoAgent.CurrentHand)
         elif RequestType == 'Draw?':
-            discardCards = jameed.get_cards_to_throw()
             # discardCards = queryCardsToThrow(infoAgent.CurrentHand)
+            discardCards = jameed.get_cards_to_throw()
+            # time.sleep(.1)
             s.send('Throws ' + discardCards + "\n")
             print(POKER_CLIENT_NAME + ' Action>' + 'Throws ' + discardCards)
 
@@ -150,6 +157,9 @@ while True:
         # /** Sent from server to clients when the game is completed. */
         elif RequestType == 'Game_Over':
             infoGameOver()
+            with open('results.log', 'a') as f:
+                f.write(time.strftime('%y-%m-%d %H:%M:%S') + '\n')
+                f.write('='*20 + '\n')
             break
 
         # "Player_Open"
@@ -214,6 +224,11 @@ while True:
         # * Append the players name and the cards of the players hand after this string. Separate the words by space.*/
         elif RequestType == 'Player_Hand':
             infoPlayerHand(MsgFractions[1], MsgFractions[2:])
+
+        elif RequestType == 'Result':
+            with open('results.log', 'a') as f:
+                f.write(' '.join(MsgFractions)+'\n')
+
 
     except socket.timeout:
         break

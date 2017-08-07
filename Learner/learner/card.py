@@ -340,7 +340,7 @@ class Hand(object):
 
         sorted_dic_as_tuples = sorted(hands_dict.items(), key=lambda entry: entry[1].s0)
         del hands_dict
-        print 'Done sorting: ', len(sorted_dic_as_tuples)
+        print ('Done sorting: ', len(sorted_dic_as_tuples))
         hands_dict = {}
         duplicate_count = 0
         count = 0
@@ -355,7 +355,7 @@ class Hand(object):
 
             hand_value.strength = count
             hands_dict[hand_id] = str(hand_value)
-        print 'Saving!'
+        print ('Saving!')
         import json
         with open('./hands.json', 'w') as outfile:
             json.dump(hands_dict.items(), outfile, cls=CustomEncoder)  # , pickle.HIGHEST_PROTOCOL)

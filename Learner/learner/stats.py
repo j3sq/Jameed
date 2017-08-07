@@ -1,4 +1,4 @@
-from card import Deck, Card, Hand, HandType, HandValue, CustomEncoder, as_enum
+from learner.card import Deck, Card, Hand, HandType, HandValue, CustomEncoder, as_enum
 import json
 
 
@@ -48,15 +48,15 @@ class SBin(object):
         return self.name
 
     def print_stats(self):
-        print self.name
+        print(self.name)
         for i in range(len(self.strategies)):
-            print 'Strategy {0}: Hit count = {1}, Performance = {2}, Unweighted Performance = {3}'.format(i,
+            print('Strategy {0}: Hit count = {1}, Performance = {2}, Unweighted Performance = {3}'.format(i,
                                                                                                           self.strategies_hitcount[
                                                                                                               i],
                                                                                                           self.strategies_performance[
                                                                                                               i],
                                                                                                           self.strategies_performance_unweighted[
-                                                                                                              i])
+                                                                                                              i]))
 
     def dump_stats(self, f):
         f.write(self.name + '\n')
@@ -86,7 +86,7 @@ class StatBuilder(object):
                             strategy[0] = hand.hand_value.is_potential_flush[0]
                         hbin.strategies[idx] = strategy
                 return hbin
-        print 'hi'
+        print('hi')
 
     @staticmethod
     def define_bins():
@@ -151,21 +151,21 @@ class StatBuilder(object):
                             current_bin = sbin
                             break
                     if current_bin is None:
-                        print 'Failed while loading bins stats.'
+                        print('Failed while loading bins stats.')
                         return
                 elif len(l_data) == 4:
                     sbin.strategies_hitcount[int(l_data[0])] = int(l_data[1])
                     sbin.strategies_performance[int(l_data[0])] = float(l_data[2])
                     sbin.strategies_performance_unweighted[int(l_data[0])] = float(l_data[3])
                 else:
-                    print 'Invalid file format'
+                    print('Invalid file format')
                     return
-        print 'Bins stats loaded successfully'
+        print('Bins stats loaded successfully')
 
     def print_stats(self):
         for sbin in StatBuilder.bins:
             sbin.print_stats()
-            print '-' * 16
+            print('-' * 16)
 
     def dump_stats(self, file_location):
         StatBuilder.global_iterations_count += self.iterations_count

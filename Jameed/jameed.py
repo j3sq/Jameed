@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append('../Learner')
 import ClientBase
 import random
@@ -7,42 +8,48 @@ from learner.stats import StatBuilder, SBin
 import time
 from math import exp
 
-
 HANDS_COMBINATIONS = 2598960
 THRESHOLD_TO_OPEN = 0.2
-THRESHOLD_TO_FORCE_ALL_IN = 0.95
+THRESHOLD_TO_FORCE_ALL_IN = 0.985
 THRESHOLD_TO_FORCE_FOLD = 0.2
 
 # Coefficients for bias calculation of the 'Open' action
-OPEN_ACTION_A_CHECK = 5.0
-OPEN_ACTION_B_CHECK = -1.0
-OPEN_ACTION_C_CHECK = 0.6
-OPEN_ACTION_A_OPEN = 4.0
-OPEN_ACTION_B_OPEN = 1.4
-OPEN_ACTION_C_OPEN = -1.1
-OPEN_ACTION_A_ALL_IN = 0.3
-OPEN_ACTION_B_ALL_IN = 5.0
-OPEN_ACTION_C_ALL_IN = -3.0
+OPEN_ACTION_A_CHECK = 1.0
+OPEN_ACTION_B_CHECK = 1.0
+OPEN_ACTION_C_CHECK = 10.
+OPEN_ACTION_D_CHECK = -0.2
+OPEN_ACTION_A_OPEN = 0.0
+OPEN_ACTION_B_OPEN = -1.0
+OPEN_ACTION_C_OPEN = 50.
+OPEN_ACTION_D_OPEN = -0.45
+OPEN_ACTION_A_ALL_IN = 0.0
+OPEN_ACTION_B_ALL_IN = -1.0
+OPEN_ACTION_C_ALL_IN = 100.0
+OPEN_ACTION_D_ALL_IN = -0.48
 
 CALL_RAISE_ACTION_A_FOLD = 1.
 CALL_RAISE_ACTION_B_FOLD = 1.
-CALL_RAISE_ACTION_C_FOLD = 10.
+CALL_RAISE_ACTION_C_FOLD = 5.
 CALL_RAISE_ACTION_D_FOLD = 0.4
+CALL_RAISE_ACTION_E_FOLD = 1.2
 
-CALL_RAISE_ACTION_A_CALL = 1.
-CALL_RAISE_ACTION_B_CALL = 1.
-CALL_RAISE_ACTION_C_CALL = 2.
-CALL_RAISE_ACTION_D_CALL = 0.5
+CALL_RAISE_ACTION_A_CALL = 0.
+CALL_RAISE_ACTION_B_CALL = -1.
+CALL_RAISE_ACTION_C_CALL = 8.
+CALL_RAISE_ACTION_D_CALL = 0.25
+CALL_RAISE_ACTION_E_CALL = 1.
 
 CALL_RAISE_ACTION_A_RAISE = 0.
 CALL_RAISE_ACTION_B_RAISE = -1.
-CALL_RAISE_ACTION_C_RAISE = 8.
-CALL_RAISE_ACTION_D_RAISE = -0.3
+CALL_RAISE_ACTION_C_RAISE = 60.
+CALL_RAISE_ACTION_D_RAISE = -0.45
+CALL_RAISE_ACTION_E_RAISE = 0.1
 
 CALL_RAISE_ACTION_A_ALL_IN = 0.
 CALL_RAISE_ACTION_B_ALL_IN = -1.
-CALL_RAISE_ACTION_C_ALL_IN = 25.
-CALL_RAISE_ACTION_D_ALL_IN = -0.45
+CALL_RAISE_ACTION_C_ALL_IN = 200.
+CALL_RAISE_ACTION_D_ALL_IN = -0.49
+CALL_RAISE_ACTION_E_ALL_IN = 0.02
 
 # Coefficients for bias calculation of the 'Open' amount
 OPEN_AMOUNT_KEEP_MULTIPLES_OF_ANTE = 1
@@ -55,7 +62,7 @@ class PlayerInfo(object):
         self.index = 0
         self.current_bet = 0
         self.chips = 0
-        self.did_drew = False
+        self.did_draw = False
 
 
 class Jameed(object):
@@ -128,6 +135,7 @@ class Jameed(object):
         # The decision is a random variable disrupted to maximize expected value
         beta = 0
         strategy_markers = []
+        self.debug('Deciding what to throw. Current hand is -> {}'.format(self.__hand.hand_value))
         for i in range(len(self.__bin.strategies)):
             p_yield = self.__bin.strategies_performance_unweighted[
                 i]  # probability that this strategy will yield better results
@@ -142,10 +150,11 @@ class Jameed(object):
                 selected_strategy_idx = i
                 break
         cards_to_throw = ''
+        self.debug('Strategies distribution = {}, q = {:.2f}'.format(strategy_markers, q))
         for i in self.__bin.strategies[selected_strategy_idx]:
             card_to_throw = str(self.__hand.hand_value.cards[i]).replace('10', 'T')
             cards_to_throw += card_to_throw + ' '
-        self.debug('My hand is -> {}'.format(self.__hand))
+
         if cards_to_throw == '':
             self.debug('My strategy is to throw nothing')
         else:
@@ -172,7 +181,7 @@ class Jameed(object):
         # Start
         # Fixed strategy: Jameed has no enough chips -> check
         if minimum_pot_after_open > (remaining_chips + current_bet):
-            self.debug('Open choice: Forced to go for check as I have not enough chips')
+            self.debug('Open choice: Forced to check as I have no enough chips')
             return ClientBase.BettingAnswer.ACTION_CHECK
         # * Jameed has enough chips to open : Choose Open, Check or All-in
         p_hand = float(self.__hand.hand_value.strength) / HANDS_COMBINATIONS
@@ -182,7 +191,7 @@ class Jameed(object):
         self.debug('p_h = {:.2f}, p_w = {:.2f}'.format(p_hand, p_win))
 
         # Fixed strategy: Hand is too bad -> check
-        if p_win < THRESHOLD_TO_OPEN:
+        if p_win < THRESHOLD_TO_OPEN and self.__did_draw:
             self.debug('Open choice: Forced to check due to crappy hand')
             return ClientBase.BettingAnswer.ACTION_CHECK
         # Fixed strategy: Hand is too good --> All in
@@ -205,15 +214,20 @@ class Jameed(object):
 
         # * Jameed has enough money to open, the action should be a random variable of {Check, Open, All-in} the
         #       distribution is function of p_win.
-        ka = OPEN_ACTION_A_ALL_IN * exp(OPEN_ACTION_B_ALL_IN * p_win + OPEN_ACTION_C_ALL_IN)
-        kc = OPEN_ACTION_A_CHECK * exp(OPEN_ACTION_B_CHECK * p_win + OPEN_ACTION_C_CHECK)
-        ko = OPEN_ACTION_A_OPEN * exp(OPEN_ACTION_B_OPEN * p_win + OPEN_ACTION_C_OPEN)
-        k_sum = kc + ko + ka
+        k_c = OPEN_ACTION_A_CHECK - OPEN_ACTION_B_CHECK / (
+            1.0 + exp(-OPEN_ACTION_C_CHECK * (p_win - 0.5 + OPEN_ACTION_D_CHECK)))
+        k_o = OPEN_ACTION_A_OPEN - OPEN_ACTION_B_OPEN / (
+            1.0 + exp(-OPEN_ACTION_C_OPEN * (p_win - 0.5 + OPEN_ACTION_D_OPEN)))
+        k_a = OPEN_ACTION_A_ALL_IN - OPEN_ACTION_B_ALL_IN / (
+            1.0 + exp(-OPEN_ACTION_C_ALL_IN * (p_win - 0.5 + OPEN_ACTION_D_ALL_IN)))
+        k_sum = k_c + k_o + k_a
         r = random.uniform(0, k_sum)
-        if r < kc:
+        self.debug(
+            "Open choice sampling: Kc={:.2f}, Ko={:.2f}, Ka={:.2f}, r={:.2f}".format(k_c, k_c + k_o, k_sum, r))
+        if r < k_c:
             self.debug('Open choice: Biased to check')
             return ClientBase.BettingAnswer.ACTION_CHECK
-        elif kc <= r < kc + ko:
+        elif k_c <= r < k_c + k_o:
             self.debug('Open choice: Biased to open')
             return ClientBase.BettingAnswer.ACTION_OPEN
         else:
@@ -227,7 +241,9 @@ class Jameed(object):
             return minimum_pot_after_open
 
         free_chips = remaining_chips_after_minimum_open - OPEN_AMOUNT_KEEP_MULTIPLES_OF_ANTE * self.ante
-        open_amount = minimum_pot_after_open + random.uniform(0, free_chips * p_win)
+        ratio = 1/(1+exp(-30.*(p_win-0.9)))
+
+        open_amount = minimum_pot_after_open + random.uniform(0, free_chips * ratio)
         return int(open_amount)
 
     def get_call_raise_action(self, maximum_bet, minimum_amount_to_raise_to, current_bet, remaining_chips):
@@ -261,7 +277,7 @@ class Jameed(object):
         # Fixed Strategy: Hand is extremely good
         if p_win > THRESHOLD_TO_FORCE_ALL_IN:
             self.debug('Call/Raise choice: Forced to go all in due to amazing hand')
-            return ClientBase.BettingAnswer.ACTION_ALLINACTION_FOLD
+            return ClientBase.BettingAnswer.ACTION_ALLIN
 
         action = self.sample_call_raise_action_with_bias(p_win, maximum_bet, minimum_amount_to_raise_to, current_bet,
                                                          remaining_chips)
@@ -270,16 +286,26 @@ class Jameed(object):
 
     def sample_call_raise_action_with_bias(self, p_win, maximum_bet, minimum_amount_to_raise_to, current_bet,
                                            remaining_chips):
-        k_f = CALL_RAISE_ACTION_A_FOLD + CALL_RAISE_ACTION_B_FOLD / (
-            1.0 + exp(-CALL_RAISE_ACTION_C_FOLD * (p_win - 0.5 + CALL_RAISE_ACTION_D_FOLD)))
-        k_c = CALL_RAISE_ACTION_A_CALL + CALL_RAISE_ACTION_B_CALL / (
-            1.0 + exp(-CALL_RAISE_ACTION_C_CALL * (p_win - 0.5 + CALL_RAISE_ACTION_D_CALL)))
-        k_r = CALL_RAISE_ACTION_A_RAISE + CALL_RAISE_ACTION_B_RAISE / (
-            1.0 + exp(-CALL_RAISE_ACTION_C_RAISE * (p_win - 0.5 + CALL_RAISE_ACTION_D_RAISE)))
-        k_a = CALL_RAISE_ACTION_A_ALL_IN + CALL_RAISE_ACTION_B_ALL_IN / (
-            1.0 + exp(-CALL_RAISE_ACTION_C_ALL_IN * (p_win - 0.5 + CALL_RAISE_ACTION_D_ALL_IN)))
+        risk = float(maximum_bet) / (current_bet + remaining_chips)
+        if risk > 1.:
+            risk = 1.
+        k_f = CALL_RAISE_ACTION_A_FOLD - CALL_RAISE_ACTION_B_FOLD / (
+            1.0 + exp(
+                -CALL_RAISE_ACTION_C_FOLD * (p_win - 0.5 + CALL_RAISE_ACTION_D_FOLD - CALL_RAISE_ACTION_D_FOLD * risk)))
+        k_c = CALL_RAISE_ACTION_A_CALL - CALL_RAISE_ACTION_B_CALL / (
+            1.0 + exp(
+                -CALL_RAISE_ACTION_C_CALL * (p_win - 0.5 + CALL_RAISE_ACTION_D_CALL - CALL_RAISE_ACTION_E_CALL * risk)))
+        k_r = CALL_RAISE_ACTION_A_RAISE - CALL_RAISE_ACTION_B_RAISE / (
+            1.0 + exp(-CALL_RAISE_ACTION_C_RAISE * (
+                p_win - 0.5 + CALL_RAISE_ACTION_D_RAISE - CALL_RAISE_ACTION_E_RAISE * risk)))
+        k_a = CALL_RAISE_ACTION_A_ALL_IN - CALL_RAISE_ACTION_B_ALL_IN / (
+            1.0 + exp(-CALL_RAISE_ACTION_C_ALL_IN * (
+                p_win - 0.5 + CALL_RAISE_ACTION_D_ALL_IN - CALL_RAISE_ACTION_E_ALL_IN * risk)))
         k_sum = k_f + k_c + k_r + k_a
         r = random.uniform(0, k_sum)
+        self.debug(
+            "Call/Raise choice sampling: Kf={:.2f}, Kc={:.2f}, Kr={:.2f}, Ka={:.2f}, risk ={:.2f}, r={:.2f}"
+                .format(k_f, k_f + k_c, k_f + k_c + k_r, k_sum, risk, r))
         if r < k_f:
             self.debug('Call/Raise choice: Biased to fold')
             return ClientBase.BettingAnswer.ACTION_FOLD
@@ -288,19 +314,43 @@ class Jameed(object):
                 self.debug('Call/Raise choice: Biased to call')
                 return ClientBase.BettingAnswer.ACTION_CALL
             else:
-                self.debug('Call/Raise choice: Biased to call but forced to fold due to insufficient chips')
-                return ClientBase.BettingAnswer.ACTION_FOLD
+                # self.debug('Call/Raise choice: Biased to call but forced to fold due to insufficient chips')
+                self.debug('Call/Raise choice: Biased to call but will go for All-in due to insufficient chips ')
+                return ClientBase.BettingAnswer.ACTION_ALLIN
         if r <= k_f + k_c + k_r:
             if minimum_amount_to_raise_to < current_bet + remaining_chips:
                 self.debug('Call/Raise choice: Biased to raise to {}'.format(minimum_amount_to_raise_to))
-                return ClientBase.BettingAnswer.ACTION_RAISE, minimum_amount_to_raise_to # ToDo: Add possibility to go over the minimum
+                return ClientBase.BettingAnswer.ACTION_RAISE, minimum_amount_to_raise_to  # ToDo: Add possibility to go over the minimum
             elif maximum_bet < current_bet + remaining_chips:
                 self.debug('Call/Raise choice: Biased to raise but forced to call due to insufficient chips')
                 return ClientBase.BettingAnswer.ACTION_CALL
             else:
-                self.debug('Call/Raise choice: Biased to raise but forced to fold due to insufficient chips')
-                return ClientBase.BettingAnswer.ACTION_FOLD # ToDo: Maybe go ALL-in?
+                self.debug('Call/Raise choice: Biased to raise but forced to go All-in')
+                return ClientBase.BettingAnswer.ACTION_ALLIN  # ToDo: Maybe Fold?
 
         self.debug('Call/Raise choice: Biased to go all in')
         return ClientBase.BettingAnswer.ACTION_ALLIN
 
+    def process_results_log(self, file):
+        game_count = 0
+        win_count = 0
+        win_round_count = 0
+        loose_round_count = 0
+
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if self.name in line:
+                    game_count += 1
+                    parts = line.strip().split(' ')
+                    if int(parts[3]) == 0:
+                        loose_round_count += int(parts[2])
+                    elif int(parts[3]) > 0:
+                        win_count += 1
+                        win_round_count += int(parts[2])
+        loose_count = game_count - win_count
+        win_ratio = float(win_count)/game_count*100
+        loose_ratio = float(loose_count)/game_count*100
+        self.debug('Total games = {}, won = {} ({:.2f}%) , lost = {} ({:.2f}%)'.format(game_count, win_count, win_ratio, loose_count, loose_ratio))
+        self.debug('Average rounds count for win = {:.2f}, for loose = {:.2f}'.format(float(win_round_count) / win_count,
+                                                                              float(loose_round_count) / loose_count))

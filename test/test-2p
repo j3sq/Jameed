@@ -1,0 +1,18 @@
+java -jar ../PokerServerGUI/PokerServerGui.jar &
+sleep 2
+xdotool key Control_L+n Tab Tab Tab Tab Tab Tab Delete Delete Delete Delete Delete 0 Tab KP_Enter
+sleep 5
+python ../PokerClientRandom/Fadi/PokerGame.py &
+sleep 2
+cd ../Jameed && python PokerGame.py
+
+for (( c=1; c<100; c++ ))
+do
+	sleep 2
+	xdotool key Control_L+n KP_Enter
+	sleep 5
+	python ../PokerClientRandom/Fadi/PokerGame.py &
+	sleep 2
+	cd ../Jameed && python PokerGame.py
+done
+echo '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Done >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'

@@ -1,2 +1,2 @@
-from card import Card, Deck, HandType, HandValue
+from learner.card import Card, Deck, HandType, HandValue
 
